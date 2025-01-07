@@ -1,0 +1,40 @@
+IDENTIFICATION DIVISION.
+PROGRAM-ID. InputToFile.
+
+ENVIRONMENT DIVISION.
+INPUT-OUTPUT SECTION.
+FILE-CONTROL.
+    SELECT OutputFile ASSIGN TO 'output.txt'
+        ORGANIZATION IS LINE SEQUENTIAL.
+
+DATA DIVISION.
+FILE SECTION.
+FD  OutputFile.
+01  OutputRecord PIC X(80).  *> Define the structure of the output record
+
+WORKING-STORAGE SECTION.
+01  UserInput PIC X(80).      *> Variable to store terminal input
+01  EndOfInput PIC X VALUE 'N'.
+
+PROCEDURE DIVISION.
+Main.
+    *> Open the file for output
+    OPEN OUTPUT OutputFile.
+
+    *> Loop to get input from the terminal
+    PERFORM UNTIL EndOfInput = 'Y'
+        DISPLAY 'Enter text (or type "END" to stop):'
+        ACCEPT UserInput
+        IF UserInput = 'END'
+            MOVE 'Y' TO EndOfInput
+        ELSE
+            MOVE UserInput TO OutputRecord
+            WRITE OutputRecord
+        END-IF
+    END-PERFORM
+
+    *> Close the output file
+    CLOSE OutputFile.
+
+    DISPLAY 'Data written to output.txt successfully.'
+    STOP RUN.
